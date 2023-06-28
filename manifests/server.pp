@@ -15,7 +15,7 @@ class graylog::server(
   }
 
   # Check mandatory settings
-  if 'password_secret' is not in $config {
+  if ! ('password_secret' in $config) {
     fail('Missing "password_secret" config setting!')
   }
   if 'root_password_sha2' in $config {
