@@ -1,5 +1,6 @@
 class graylog::params {
-  $major_version = '4.2'
+  $major_version = '5.1'
+  $package_name = 'graylog-server'
   $package_version = 'installed'
 
   $repository_release = 'stable'
@@ -9,7 +10,7 @@ class graylog::params {
     'data_dir'            => '/var/lib/graylog-server',
     'plugin_dir'          => '/usr/share/graylog-server/plugin',
     'message_journal_dir' => '/var/lib/graylog-server/journal',
-    'is_master'           => true,
+    'is_leader'           => true,
   }
 
   $server_user = 'graylog'

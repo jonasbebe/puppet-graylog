@@ -1,6 +1,6 @@
 {
   "name": "graylog-graylog",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Graylog, Inc.",
   "summary": "Install and configure a Graylog system",
   "license": "Apache-2.0",
@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.16.0 < 8.0.0"
+      "version_requirement": ">= 4.16.0 < 10.0.0"
     },
     {
       "name": "puppetlabs/apt",
@@ -54,9 +54,10 @@
     "logs",
     "events",
     "elasticsearch",
+    "opensearch",
     "mongodb"
   ],
-  "pdk-version": "2.2.0",
-  "template-url": "pdk-default#2.2.0",
-  "template-ref": "tags/2.2.0-0-g2381db6"
+  "pdk-version": "3.0.0",
+  "template-url": "pdk-default#3.0.0",
+  "template-ref": "tags/3.0.0-0-g056e50d"
 }

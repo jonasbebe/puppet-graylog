@@ -1,4 +1,5 @@
-class graylog::server(
+class graylog::server (
+  $package_name = $graylog::params::package_name,
   $package_version = $graylog::params::package_version,
   Optional[Hash] $config = undef,
   $user = $graylog::params::server_user,
@@ -15,7 +16,7 @@ class graylog::server(
   }
 
   # Check mandatory settings
-  if ! ('password_secret' in $config) {
+  unless 'password_secret' in $config {
     fail('Missing "password_secret" config setting!')
   }
   if 'root_password_sha2' in $config {
@@ -26,7 +27,7 @@ class graylog::server(
     fail('Missing "root_password_sha2" config setting!')
   }
 
-  $data = merge($::graylog::params::default_config, $config)
+  $data = merge($graylog::params::default_config, $config)
 
   $notify = $restart_on_package_upgrade ? {
     true    => Service['graylog-server'],
@@ -36,7 +37,7 @@ class graylog::server(
   anchor { 'graylog::server::start': }
   anchor { 'graylog::server::end': }
 
-  package { 'graylog-server':
+  package { $package_name:
     ensure => $package_version,
     notify => $notify,
   }
@@ -57,11 +58,11 @@ class graylog::server(
         group   => $group,
         mode    => '0640',
         content => epp("${module_name}/server/environment.epp",
-                      {
-                        'java_initial_heap_size' => $java_initial_heap_size,
-                        'java_max_heap_size'     => $java_max_heap_size,
-                        'java_opts'              => $java_opts
-                      }),
+          {
+            'java_initial_heap_size' => $java_initial_heap_size,
+            'java_max_heap_size'     => $java_max_heap_size,
+            'java_opts'              => $java_opts
+        }),
       }
     }
     'redhat': {
@@ -71,11 +72,11 @@ class graylog::server(
         group   => $group,
         mode    => '0640',
         content => epp("${module_name}/server/environment.epp",
-                      {
-                        'java_initial_heap_size' => $java_initial_heap_size,
-                        'java_max_heap_size'     => $java_max_heap_size,
-                        'java_opts'              => $java_opts
-                      }),
+          {
+            'java_initial_heap_size' => $java_initial_heap_size,
+            'java_max_heap_size'     => $java_max_heap_size,
+            'java_opts'              => $java_opts
+        }),
       }
     }
     default: {
@@ -91,7 +92,7 @@ class graylog::server(
   }
 
   Anchor['graylog::server::start']
-  ->Package['graylog-server']
+  ->Package[$package_name]
   ->File['/etc/graylog/server/server.conf']
   ~>Service['graylog-server']
   ->Anchor['graylog::server::end']

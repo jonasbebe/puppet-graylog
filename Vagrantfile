@@ -30,11 +30,9 @@ Vagrant.configure('2') do |config|
   ln -sf /vagrant /etc/puppetlabs/code/environments/production/modules/graylog
 
   # Required to run graylog::allinone
-  test -d /etc/puppetlabs/code/environments/production/modules/elasticsearch || puppet module install elastic-elasticsearch
   test -d /etc/puppetlabs/code/environments/production/modules/apt || puppet module install puppetlabs-apt
-  test -d /etc/puppetlabs/code/environments/production/modules/java || puppet module install puppetlabs-java
-  test -d /etc/puppetlabs/code/environments/production/modules/mongodb || git clone https://github.com/voxpupuli/puppet-mongodb.git /etc/puppetlabs/code/environments/production/modules/mongodb/
-
+  test -d /etc/puppetlabs/code/environments/production/modules/mongodb || puppet module install puppet-mongodb
+  test -d /etc/puppetlabs/code/environments/production/modules/opensearch || puppet module install puppet-opensearch
 
   cp /home/vagrant/site.pp /etc/puppetlabs/code/environments/production/manifests/
 
@@ -46,7 +44,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.define 'ubuntu2004' do |machine|
     machine.vm.box = 'geerlingguy/ubuntu2004'
-    machine.vm.network 'private_network', ip: '10.10.0.11'
+    machine.vm.network 'private_network', type: 'dhcp'
     machine.vm.network "forwarded_port", guest: 9000, host: 9000
     machine.vm.network "forwarded_port", guest: 12900, host: 12900
 
@@ -55,10 +53,10 @@ Vagrant.configure('2') do |config|
     machine.vm.provision 'common', type: 'shell', inline: common_script
   end
 
-  config.vm.define 'centos8' do |machine|
-    machine.vm.box = "geerlingguy/centos8"
+  config.vm.define 'rockylinux8' do |machine|
+    machine.vm.box = "geerlingguy/rockylinux8"
 
-    machine.vm.network 'private_network', ip: '10.10.0.11'
+    machine.vm.network 'private_network', type: 'dhcp'
     machine.vm.network "forwarded_port", guest: 9000, host: 9000
     machine.vm.network "forwarded_port", guest: 12900, host: 12900
 
@@ -72,7 +70,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.provider 'virtualbox' do |v|
-    v.memory = 2048
-    v.cpus = 2
+    v.memory = 4096
+    v.cpus = 4
   end
 end
